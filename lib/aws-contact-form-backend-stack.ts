@@ -1,18 +1,38 @@
-import * as sns from '@aws-cdk/aws-sns';
-import * as subs from '@aws-cdk/aws-sns-subscriptions';
-import * as sqs from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as apigw from '@aws-cdk/aws-apigatewayv2';
+import * as iam from '@aws-cdk/aws-iam';
+import { HttpMethod, LambdaProxyIntegration } from '@aws-cdk/aws-apigatewayv2';
 
 export class AwsContactFormBackendStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'AwsContactFormBackendQueue', {
-      visibilityTimeout: cdk.Duration.seconds(300)
+    const mylambda = new lambda.Function(this, 'ContactFormHandler', {
+      runtime: lambda.Runtime.GO_1_X,
+      code: lambda.Code.fromAsset('lambda'),
+      functionName: 'AwsContactFormBackendLambda',
+      handler: 'main',
+      logRetention: 7,
+      initialPolicy: [new iam.PolicyStatement({
+        actions: [
+          'ses:SendRawEmail',
+          'ses:SendEmail',
+        ],
+        resources: ['*'],
+      })]
     });
 
-    const topic = new sns.Topic(this, 'AwsContactFormBackendTopic');
+    const apigateway = new apigw.HttpApi(this, 'ContactFormApi');
 
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    const lambda_integration = new LambdaProxyIntegration({
+      handler: mylambda
+    });
+
+    apigateway.addRoutes({
+      path: '/send',
+      methods: [ HttpMethod.POST ],
+      integration: lambda_integration
+    });
   }
 }
