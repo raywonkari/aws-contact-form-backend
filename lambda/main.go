@@ -23,15 +23,17 @@ type Data struct {
 	Message string
 }
 
+//Response has the request response
+type Response struct {
+	Message string `json:"message"`
+}
+
 const (
 	//Email used to send and receive
 	Email = "its@raywonkari.com"
 
 	//Charset for HTML content
 	Charset = "Utf-8"
-
-	//GenericErrorResponse used in the code
-	GenericErrorResponse = "something went wrong. try again after some time"
 )
 
 func sendEmail(name, email, message string) error {
@@ -45,7 +47,7 @@ func sendEmail(name, email, message string) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(GenericErrorResponse)
+		return errors.New("ERROR")
 	}
 
 	// Init SES Session
@@ -79,7 +81,7 @@ func sendEmail(name, email, message string) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(GenericErrorResponse)
+		return errors.New("ERROR")
 	}
 	fmt.Println("Email sent")
 
@@ -87,7 +89,7 @@ func sendEmail(name, email, message string) error {
 }
 
 //HandleRequest function
-func HandleRequest(input MyEvent) error {
+func HandleRequest(input MyEvent) (Response, error) {
 
 	inputJSON := []byte(input.Body)
 
@@ -97,7 +99,7 @@ func HandleRequest(input MyEvent) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(GenericErrorResponse)
+		return Response{Message: "ERROR"}, nil
 	}
 
 	fmt.Println("Triggering sendEmail Function")
@@ -105,10 +107,10 @@ func HandleRequest(input MyEvent) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(GenericErrorResponse)
+		return Response{Message: "ERROR"}, nil
 	}
 
-	return nil
+	return Response{Message: "OK"}, nil
 }
 
 func main() {
