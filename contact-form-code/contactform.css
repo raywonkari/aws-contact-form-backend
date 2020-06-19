@@ -1,0 +1,30 @@
+/* Mobile */
+@media only screen and (max-width: 600px) {
+    .contact-form {
+        margin: 150px 50px;
+    }
+}
+
+/* Tablet */
+@media only screen and (min-width: 600px) and (max-width: 992px) {
+    .contact-form {
+        margin: 100px 200px;
+    }
+}
+
+/* Laptop */
+@media only screen and (min-width: 992px) {
+    .contact-form {
+        margin: 200px 300px;
+    }
+}
+
+#contact {
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.form-border {
+    padding: 10px;
+    background-color: #F3F3F3;
+}
