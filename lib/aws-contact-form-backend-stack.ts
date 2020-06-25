@@ -23,7 +23,11 @@ export class AwsContactFormBackendStack extends cdk.Stack {
       })]
     });
 
-    const apigateway = new apigw.HttpApi(this, 'ContactFormApi');
+    const apigateway = new apigw.HttpApi(this, 'ContactFormApi', {
+      corsPreflight: {
+        allowOrigins: ['https://raywonkari.com'],
+      }
+    });
 
     const lambda_integration = new LambdaProxyIntegration({
       handler: mylambda
