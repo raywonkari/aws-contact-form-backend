@@ -19,3 +19,5 @@ In the `lambda` directory, we have the lambda function code written in Golang, a
 The binary file is used in the CDK APP to deploy it to AWS.
 
 In the `contact-form-code` directory, we have an example of how the frontend is setting up a contact form, dealing with the fields, sending the data to API GW, and acting upon the response.
+
+This repo is used as the reference in one of my blog post available here: https://raywontalks.com/contact-form-aws/
